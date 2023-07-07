@@ -32,8 +32,10 @@ CREATE TABLE "city" (
 
 CREATE TABLE "user_account" (
   "id" serial PRIMARY KEY,
-  "email" varchar(25),
-  "password" varchar(14),
+  "active" boolean NOT NULL,
+  "email" varchar(25) UNIQUE,
+  "password" varchar(60),
+  "role" varchar(10),
   "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -124,7 +126,22 @@ ALTER TABLE "shipped" ADD FOREIGN KEY ("shipped_status_id") REFERENCES "shipped_
 ALTER TABLE "product" ADD FOREIGN KEY ("category_id") REFERENCES "category" ("id");
 
 -- test data Region
+INSERT INTO region (name) VALUES ('Arica y Parinacota');
+INSERT INTO region (name) VALUES ('Tarapacá');
+INSERT INTO region (name) VALUES ('Antofagasta');
+INSERT INTO region (name) VALUES ('Atacama');
+INSERT INTO region (name) VALUES ('Coquimbo');
+INSERT INTO region (name) VALUES ('Valparaíso');
 INSERT INTO region (name) VALUES ('Metropolitana');
+INSERT INTO region (name) VALUES ('O’Higgins');
+INSERT INTO region (name) VALUES ('Maule');
+INSERT INTO region (name) VALUES ('Ñuble');
+INSERT INTO region (name) VALUES ('Biobío');
+INSERT INTO region (name) VALUES ('La Araucanía');
+INSERT INTO region (name) VALUES ('Los Ríos');
+INSERT INTO region (name) VALUES ('Los Lagos');
+INSERT INTO region (name) VALUES ('Aysén');
+INSERT INTO region (name) VALUES ('Magallanes y la Antártica');
 
 -- test data city
 INSERT INTO city (region_id, name) VALUES (1, 'Santiago');
@@ -132,7 +149,28 @@ INSERT INTO city (region_id, name) VALUES (1, 'Colina');
 INSERT INTO city (region_id, name) VALUES (1, 'San Miguel');
 
 -- test data user_account
-INSERT INTO user_account (email, password) values ('test@test.cl', '1234');
+INSERT INTO user_account (email, password, role, created_at) 
+VALUES ('usuario1@example.com', 'password1', 'user', CURRENT_TIMESTAMP);
+INSERT INTO user_account (email, password, role, created_at) 
+VALUES ('usuario2@example.com', 'password2', 'user', CURRENT_TIMESTAMP);
+INSERT INTO user_account (email, password, role, created_at) 
+VALUES ('usuario3@example.com', 'password3', 'user', CURRENT_TIMESTAMP);
+INSERT INTO user_account (email, password, role, created_at) 
+VALUES ('usuario4@example.com', 'password4', 'user', CURRENT_TIMESTAMP);
+INSERT INTO user_account (email, password, role, created_at) 
+VALUES ('usuario5@example.com', 'password5', 'user', CURRENT_TIMESTAMP);
+INSERT INTO user_account (email, password, role, created_at) 
+VALUES ('usuario6@example.com', 'password6', 'user', CURRENT_TIMESTAMP);
+INSERT INTO user_account (email, password, role, created_at) 
+VALUES ('usuario7@example.com', 'password7', 'user', CURRENT_TIMESTAMP);
+INSERT INTO user_account (email, password, role, created_at) 
+VALUES ('usuario8@example.com', 'password8', 'user', CURRENT_TIMESTAMP);
+INSERT INTO user_account (email, password, role, created_at) 
+VALUES ('usuario9@example.com', 'password9', 'user', CURRENT_TIMESTAMP);
+INSERT INTO user_account (email, password, role, created_at) 
+VALUES ('usuario10@example.com', 'password10', 'user', CURRENT_TIMESTAMP);
+INSERT INTO user_account (email, password, role, created_at) 
+VALUES ('admin1@example.com', 'admin1', 'admin', CURRENT_TIMESTAMP);
 
 -- test data customer
 INSERT INTO customer (user_account_id, first_name, last_name, phone) values (1, 'Victor', 'Zamorano', '56942384773');
