@@ -88,7 +88,11 @@ CREATE TABLE "shopping_cart_detail" (
   "shopping_cart_id" int,
   "product_id" int,
   "quantity" int,
-  "total_price" int
+  "total_price" int,
+  FOREIGN KEY ("shopping_cart_id")
+    REFERENCES "shopping_cart" ("id")
+    ON DELETE CASCADE
+
 );
 
 CREATE TABLE "address" (
@@ -174,6 +178,7 @@ VALUES ('admin1@example.com', 'admin1', 'admin', CURRENT_TIMESTAMP);
 
 -- test data customer
 INSERT INTO customer (user_account_id, first_name, last_name, phone) values (1, 'Victor', 'Zamorano', '56942384773');
+INSERT INTO customer (user_account_id, first_name, last_name, phone) values (2, 'renato', 'Perez', '56942384773');
 
 -- test data category
 INSERT INTO category (category_name) VALUES ('Zapatilla');

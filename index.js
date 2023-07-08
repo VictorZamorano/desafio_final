@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import usersRouter from "./src/routes/users.routes.js";
+import cartRoutes from "./src/routes/cartRoutes.js";
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use("/users", usersRouter);
+app.use("/", cartRoutes)
 
 const PORT = process.env.port || 3000;
 app.listen(PORT, () => {
