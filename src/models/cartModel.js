@@ -122,12 +122,13 @@ const updateProductOnCart = async (newQuantity, shopping_cart_id, product) =>{
 
 const addProductToExistingCart = async (shopping_cart_id, product) => {
 
-	const existingQuantity = await existingProductQuantity(shopping_cart_id[0].id, product[0].product_id)
-	console.log("existingQuantity", existingQuantity)
-
-	// Const creada para sumar productos 
-	const newQuantity = existingQuantity + product[0].quantity;
 	try {
+		const existingQuantity = await existingProductQuantity(shopping_cart_id[0].id, product[0].product_id)
+		console.log("existingQuantity", existingQuantity)
+	
+	
+		// Const creada para sumar productos 
+		const newQuantity = existingQuantity + product[0].quantity;
 
     if (existingQuantity > 0) {
       // Si el producto ya existe en el carrito, actualiza la cantidad
@@ -153,11 +154,15 @@ const createNewCart = async (user_account_id, product) => {
 			const prod_detail = await productModel.getProduct(prod.product_id);
 			if(prod_detail.length > 0) {
 				cart_total_price += (prod.quantity * prod_detail[0].price); /* cantidad del producto seleccionado por usuario * precio del producto existente */
-				return { // Esto se hace para aprovechar el llamado a la tabla producto y llenar esta lista con los datos necesarios para ingresar el detalle del carro
+				const cart = { // Esto se hace para aprovechar el llamado a la tabla producto y llenar esta lista con los datos necesarios para ingresar el detalle del carro
 					product_id: prod.product_id,
 					quantity: prod.quantity,
 					total_price: (prod.quantity * prod_detail[0].price)
-				};
+				}
+				if(!cart){
+					throw {code: "400"}
+				} // ESTABA REVISANDO ESTO
+				return cart;
 			
 			} else {
 				throw error;
@@ -191,37 +196,51 @@ const createNewCartDetail = async (user_account_id, shopping_cart_id, product_de
 
 const deleteProductFromCart = async (user_account_id, product) => {
 	try {
-		let shoppingCart = await getCartGeneralData(user_account_id);
-		// Primero buscamos si existe un carro para el usuario, de no ser así, lo crearemos desde 0
-		await removeProductOnCart(shoppingCart, product, user_account_id);
-		const cart = await getJsonFormCart(shoppingCart)
-		return cart
+	  let shoppingCart = await getCartGeneralData(user_account_id);
+  
+	  await removeProductOnCart(shoppingCart, product, user_account_id);
+  
+	  shoppingCart = await getCartGeneralData(user_account_id);
+	  const updatedCart = await getJsonFormCart(shoppingCart);
+  
+	  if (updatedCart.product.length === 0) {
+		// Si no hay productos en el carrito, eliminar el carrito por completo
+		const deleteQuery = "DELETE FROM shopping_cart WHERE user_account_id = $1";
+		await pool.query(deleteQuery, [user_account_id]);
+		// REVISAR ESTO, VER CODE Y MESSAGE
+		return {message: "Tu carro se encuentra vacio, debes agregar productos para visualizarlos"};
+	  }
+  
+	  return updatedCart;
 	} catch (error) {
-		throw error;
+	  throw error;
 	}
-};
+  };
 
 
-const removeProductOnCart = async (shopping_cart_id, product, user_account_id) =>{
+const removeProductOnCart = async (shopping_cart_id, product, user_account_id) => {
 	try {
-		
-		const existingQuantity = await existingProductQuantity(shopping_cart_id[0].id, product[0].product_id)
-		
-		// Const creada para restar productos 
-		const newQuantity = existingQuantity - product[0].quantity;
-
-		if (existingQuantity > 1) {
-			await updateProductOnCart (newQuantity, shopping_cart_id[0].id, product[0].product_id)
-		
-		} else {
-			// Si la cantidad es 0, elimina el cart
-			const deleteQuery = "DELETE FROM shopping_cart WHERE user_account_id = $1";
-			await pool.query(deleteQuery, [user_account_id]);
-		  }
+	  const existingQuantity = await existingProductQuantity(shopping_cart_id[0].id, product[0].product_id);
+  
+	  // Cantidad restante después de eliminar el producto
+	  const newQuantity = existingQuantity - product[0].quantity;
+  
+	  if (newQuantity >= 1) {
+		// Actualizar la cantidad y el precio total del producto
+		await updateProductOnCart(newQuantity, shopping_cart_id[0].id, product[0].product_id);
+	  } else {
+		// Eliminar el producto del carrito
+		const deleteProductQuery = "DELETE FROM shopping_cart_detail WHERE shopping_cart_id = $1 AND product_id = $2";
+		await pool.query(deleteProductQuery, [shopping_cart_id[0].id, product[0].product_id]);
+	  }
+  
+	  const updatedShoppingCart = await getCartGeneralData(user_account_id);
+	  const cart = await getJsonFormCart(updatedShoppingCart);
+	  return cart;
 	} catch (error) {
-		throw error
+	  throw error;
 	}
-}
+  };
 
 
 export const cartModel = { getCart, addProductToCart, deleteProductFromCart}
