@@ -13,9 +13,9 @@ const tokenGen = async (req, res) => {
     const result = await usersModel.readUser(email);
     if (result === "404") {
       throw { code: "404" };
-    }else if(result === "411") {
-      throw {code: "411"}
-    }else if (result.name === "error") {
+    } else if (result === "411") {
+      throw { code: "411" };
+    } else if (result.name === "error") {
       throw { code: result.code, message: result.message };
     }
     const verifyPass = await bcrypt.compare(password, result.password);
@@ -43,7 +43,7 @@ const generateUser = async (req, res) => {
     if (!email || !password) {
       throw { code: "400" };
     }
-    if (password.length < 8 || password.length > 15) {
+    if (password.length < 8 || password.length > 20) {
       throw { code: "403" };
     }
     const hashPass = await bcrypt.hash(password, 10);
@@ -65,9 +65,9 @@ const getUser = async (req, res) => {
     const result = await usersModel.readUser(email);
     if (result === "404") {
       throw { code: "404" };
-    }else if(result === "411") {
-      throw {code: "411"}
-    }else if (result.name === "error") {
+    } else if (result === "411") {
+      throw { code: "411" };
+    } else if (result.name === "error") {
       throw { code: result.code, message: result.message };
     }
     res.json(result);
