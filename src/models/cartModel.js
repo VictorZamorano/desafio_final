@@ -1,5 +1,5 @@
 import { pool } from "../db/connection.js";
-import { productModel } from "./productModel.js";
+import { productsModel } from "./products.model.js";
 
 
 const getCartGeneralData = async (user_account_id) => {
@@ -82,7 +82,7 @@ const createNewCart = async (user_account_id, product) => {
 		let cart_total_price = 0;
 		// Calculamos el total del nuevo carro
 		const product_detail = await Promise.all(product.map(async (prod) => {
-			const prod_detail = await productModel.getProduct(prod.product_id);
+			const prod_detail = await productsModel.getProduct(prod.product_id);
 			if(prod_detail.length > 0) {
 				cart_total_price += (prod.quantity * prod_detail[0].price); /* cantidad del producto seleccionado por usuario * precio del producto existente */
 				return { // Esto se hace para aprovechar el llamado a la tabla producto y llenar esta lista con los datos necesarios para ingresar el detalle del carro
