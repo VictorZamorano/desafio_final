@@ -15,6 +15,11 @@ export const verifyToken = (req, res, next) => {
     }
     const token = bearerHeader.split(" ")[1];
     const payload = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+    req.user_account_id = payload.user_id
+    // 
+    // console.log("payload", payload)
+    // console.log("req.user_account_id", req.user_account_id)
+    // 
     if (email != payload.email || password != payload.password) {
       throw { code: "410" };
     }
