@@ -6,7 +6,7 @@ const getCart = async (req, res) => {
     const {id} = req.params
 	try {
 		const getCart = await cartModel.getCart(id);
-		console.log(getCart);
+		// console.log(getCart);
 		res.status(200).json( getCart );
 	} catch (error) {
 		console.log(error.message);
@@ -27,8 +27,21 @@ const addProductToCart = async (req, res) => {
 	}
 };
 
+const deleteProductFromCart = async (req, res) => {
+	const {user_account_id, product} = req.body
+	try {
+		const deleteProduct = await cartModel.deleteProductFromCart(user_account_id, product);
+		res.status(200).json( deleteProduct );
+	} catch (error) {
+		console.log(error.message);
+		const { status, message } = handleErrors(error.code);
+		return res.status(status).json({ result: message });
+	}
+}
+
 
 export const cartController = {
 	getCart,
 	addProductToCart,
+	deleteProductFromCart
 };
