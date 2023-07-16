@@ -4,7 +4,6 @@ import { productsModel } from "./products.model.js";
 
 const getCartGeneralData = async (user_account_id) => {
 	try {
-		// ifUserIdExist(user_account_id)
 		const queryCart = "SELECT id, user_account_id, total_price FROM shopping_cart WHERE user_account_id = $1"
 
 		const {rows} = await pool.query(queryCart, [user_account_id]);
@@ -29,8 +28,6 @@ const getCartDetails = async (shopping_cart_id) => {
 
 const getJsonFormCart = async (shoppingCart) => {
 	try {
-		console.log(shoppingCart)
-		// const shoppingCart = await getCartGeneralData(user_account_id);
 		if(shoppingCart.length > 0){
 			const cartDetails = await getCartDetails(shoppingCart[0].id);
 			let totalPrice = 0;
@@ -48,8 +45,9 @@ const getJsonFormCart = async (shoppingCart) => {
 			return cart;
 		}
 		else {
-			throw {code: "404"};
+			throw {code: "404.1"};
 		}
+
 	} catch (error) {
 		throw error;
 	}
@@ -58,7 +56,9 @@ const getJsonFormCart = async (shoppingCart) => {
 const getCart = async (user_account_id) => {
 	try {
 		const shoppingCart = await getCartGeneralData(user_account_id);
+
 		const cart = await getJsonFormCart(shoppingCart)
+
 		return cart
 	} catch (error) {
 		throw error;
@@ -70,30 +70,48 @@ const addProductToCart = async (user_account_id, product) => {
 	try {
 		let shoppingCart = await getCartGeneralData(user_account_id);
 
-		// Primero buscamos si existe un carro para el usuario, de no ser así, lo crearemos desde 0
-		if(shoppingCart.length > 0) {
-			// Caso carro existe
-			await addProductToExistingCart(shoppingCart, product)
+		const stockAvailable = await stockProduct(product)
+		if(stockAvailable){
+			// Primero buscamos si existe un carro para el usuario, de no ser así, lo crearemos desde 0
+			if(shoppingCart.length > 0) {
+				// Caso carro existe
+				await addProductToExistingCart(shoppingCart, product)
+				
+			} else {
+				// Caso carro no existe
+				await createNewCart(user_account_id, product);
+				shoppingCart = await getCartGeneralData(user_account_id);	
+			}
+			// Tengo que llamar a una funcíon para bajar el stock del producto
+			const cart = await getJsonFormCart(shoppingCart)
+			return cart
 		} else {
-			// Caso carro no existe
-			await createNewCart(user_account_id, product);
-			shoppingCart = await getCartGeneralData(user_account_id);	
+			// AGREGAR NUEVO CODE
+			throw {code: "400"}
 		}
-		const cart = await getJsonFormCart(shoppingCart)
-		return cart
 
 	} catch (error) {
 		throw error;
 	}
 };
 
+// FALTA OPTIMIZACION PARA CUANDO YA EXISTE EL PRODUCTO EN EL CARRO ENVIE THROW DE QUE SE SUPERO LA CANTIDAD DE STOCK 
+const stockProduct = async(product) => {
+	try {
+		 const stockQuery = "SELECT stock FROM product WHERE id = $1"
+		 const {rows} = await pool.query(stockQuery, [product[0].product_id])
+		 return product[0].quantity <= rows[0].stock
+	} catch (error) {
+		throw error;
+	}
+}
+
 
 const totalPriceForProduct = async (product_id, quantity) =>{
 	const productQuery = "SELECT id, price FROM product WHERE id = $1"
+
 	const { rows } = await pool.query(productQuery, [product_id])
-	
 	const totalPrice = rows[0].price * quantity 
-	console.log(totalPrice)
 	return totalPrice
 }
 
@@ -124,8 +142,6 @@ const addProductToExistingCart = async (shopping_cart_id, product) => {
 
 	try {
 		const existingQuantity = await existingProductQuantity(shopping_cart_id[0].id, product[0].product_id)
-		console.log("existingQuantity", existingQuantity)
-	
 	
 		// Const creada para sumar productos 
 		const newQuantity = existingQuantity + product[0].quantity;
@@ -151,21 +167,21 @@ const createNewCart = async (user_account_id, product) => {
 		let cart_total_price = 0;
 		// Calculamos el total del nuevo carro
 		const product_detail = await Promise.all(product.map(async (prod) => {
-			const prod_detail = await productsModel.getProduct(prod.product_id);
-			if(prod_detail.length > 0) {
-				cart_total_price += (prod.quantity * prod_detail[0].price); /* cantidad del producto seleccionado por usuario * precio del producto existente */
-				const cart = { // Esto se hace para aprovechar el llamado a la tabla producto y llenar esta lista con los datos necesarios para ingresar el detalle del carro
+			
+			const prod_detail = await productsModel.readProduct(prod.product_id);
+
+			if(prod_detail) {
+				cart_total_price += (prod.quantity * prod_detail.price);
+				const cart = { 
 					product_id: prod.product_id,
 					quantity: prod.quantity,
-					total_price: (prod.quantity * prod_detail[0].price)
+					total_price: (prod.quantity * prod_detail.price)
 				}
 				if(!cart){
 					throw {code: "400"}
 				} // ESTABA REVISANDO ESTO
 				return cart;
 			
-			} else {
-				throw error;
 			}
 		}));
 
@@ -208,7 +224,7 @@ const deleteProductFromCart = async (user_account_id, product) => {
 		const deleteQuery = "DELETE FROM shopping_cart WHERE user_account_id = $1";
 		await pool.query(deleteQuery, [user_account_id]);
 		// REVISAR ESTO, VER CODE Y MESSAGE
-		return {message: "Tu carro se encuentra vacio, debes agregar productos para visualizarlos"};
+		return {code: "404.1", message: "Tu carro se encuentra vacio, debes agregar productos para visualizarlos"};
 	  }
   
 	  return updatedCart;
@@ -229,7 +245,7 @@ const removeProductOnCart = async (shopping_cart_id, product, user_account_id) =
 		// Actualizar la cantidad y el precio total del producto
 		await updateProductOnCart(newQuantity, shopping_cart_id[0].id, product[0].product_id);
 	  } else {
-		// Eliminar el producto del carrito
+		// Eliminar el producto del cart
 		const deleteProductQuery = "DELETE FROM shopping_cart_detail WHERE shopping_cart_id = $1 AND product_id = $2";
 		await pool.query(deleteProductQuery, [shopping_cart_id[0].id, product[0].product_id]);
 	  }

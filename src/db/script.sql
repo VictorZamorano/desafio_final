@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS "address";
 DROP TABLE IF EXISTS "shopping_cart_detail";
 DROP TABLE IF EXISTS "shopping_cart";
 DROP TABLE IF EXISTS "order_detail";
-DROP TABLE IF EXISTS "order";
+DROP TABLE IF EXISTS "user_order";
 DROP TABLE IF EXISTS "product";
 DROP TABLE IF EXISTS "category";
 DROP TABLE IF EXISTS "customer";
@@ -63,19 +63,25 @@ CREATE TABLE "product" (
   "active" boolean default true
 );
 
-CREATE TABLE "order" (
+CREATE TABLE "user_order" (
   "id" serial PRIMARY KEY,
   "user_account_id" int,
   "total_price" int,
-  "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY ("user_account_id")
+    REFERENCES "user_account" ("id")
+    ON DELETE CASCADE
 );
 
 CREATE TABLE "order_detail" (
   "id" serial PRIMARY KEY,
-  "order_id" int,
+  "user_order_id" int,
   "product_id" int,
   "quantity" int,
-  "total_price" int
+  "total_price" int,
+  FOREIGN KEY ("user_order_id")
+    REFERENCES "user_order" ("id")
+    ON DELETE CASCADE
 );
 
 CREATE TABLE "shopping_cart" (
@@ -118,8 +124,8 @@ CREATE TABLE "shipped" (
 -- index
 ALTER TABLE "city" ADD FOREIGN KEY ("region_id") REFERENCES "region" ("id");
 ALTER TABLE "customer" ADD FOREIGN KEY ("user_account_id") REFERENCES "user_account" ("id");
-ALTER TABLE "order" ADD FOREIGN KEY ("user_account_id") REFERENCES "user_account" ("id");
-ALTER TABLE "order_detail" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
+-- ALTER TABLE "order" ADD FOREIGN KEY ("user_account_id") REFERENCES "user_account" ("id");
+-- ALTER TABLE "order_detail" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
 ALTER TABLE "order_detail" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 ALTER TABLE "shopping_cart" ADD FOREIGN KEY ("user_account_id") REFERENCES "user_account" ("id");
 ALTER TABLE "shopping_cart_detail" ADD FOREIGN KEY ("shopping_cart_id") REFERENCES "shopping_cart" ("id");
@@ -182,9 +188,13 @@ INSERT INTO customer (user_account_id, first_name, last_name, phone) values (1, 
 INSERT INTO customer (user_account_id, first_name, last_name, phone) values (2, 'renato', 'Perez', '56942384773');
 
 -- test data category
-INSERT INTO category (category_name) VALUES ('Zapatilla');
-INSERT INTO category (category_name) VALUES ('Polera');
-INSERT INTO category (category_name) VALUES ('Pantalon');
+INSERT INTO category (category_name) VALUES ('placa madre');
+INSERT INTO category (category_name) VALUES ('RAM');
+INSERT INTO category (category_name) VALUES ('SSD y HDD');
+INSERT INTO category (category_name) VALUES ('Gabinetes');
+INSERT INTO category (category_name) VALUES ('Fuentes de poder');
+INSERT INTO category (category_name) VALUES ('Tarjetas de video');
+INSERT INTO category (category_name) VALUES ('Procesadores');
 
 
 -- DATA PRODUCTS:
