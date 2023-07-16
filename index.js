@@ -5,7 +5,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import usersRouter from "./src/routes/users.routes.js";
-import cartRoutes from "./src/routes/cartRoutes.js";
+import cartRoutes from "./src/routes/cart.routes.js";
 import productsRouter from "./src/routes/products.routes.js";
 
 const app = express();
