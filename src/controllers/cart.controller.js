@@ -1,6 +1,6 @@
 
-import { handleErrors } from "../helpers/users.errors.js";
-import { cartModel } from "../models/cartModel.js";
+import { cartHandleErrors } from "../helpers/cart.errors.js";
+import { cartModel } from "../models/cart.model.js";
 
 const getCart = async (req, res) => {
     const {id} = req.params
@@ -10,7 +10,7 @@ const getCart = async (req, res) => {
 		res.status(200).json( getCart );
 	} catch (error) {
 		console.log(error.message);
-		const { status, message } = handleErrors(error.code);
+		const { status, message } = cartHandleErrors(error.code);
 		return res.status(status).json({ result: message });
 	}
 };
@@ -22,7 +22,7 @@ const addProductToCart = async (req, res) => {
 		res.status(200).json( addProduct );
 	} catch (error) {
 		console.log(error.message);
-		const { status, message } = handleErrors(error.code);
+		const { status, message } = cartHandleErrors(error.code);
 		return res.status(status).json({ result: message });
 	}
 };
@@ -34,7 +34,7 @@ const deleteProductFromCart = async (req, res) => {
 		res.status(200).json( deleteProduct );
 	} catch (error) {
 		console.log(error.message);
-		const { status, message } = handleErrors(error.code);
+		const { status, message } = cartHandleErrors(error.code);
 		return res.status(status).json({ result: message });
 	}
 }

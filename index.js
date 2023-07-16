@@ -7,6 +7,7 @@ import morgan from "morgan";
 import usersRouter from "./src/routes/users.routes.js";
 import cartRoutes from "./src/routes/cart.routes.js";
 import productsRouter from "./src/routes/products.routes.js";
+import orderRoutes from "./src/routes/order.routes.js";
 
 const app = express();
 
@@ -15,8 +16,10 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use("/users", usersRouter);
-app.use("/", cartRoutes)
 app.use("/products", productsRouter)
+app.use("/", cartRoutes)
+app.use("/", orderRoutes)
+
 
 const PORT = process.env.port || 3000;
 app.listen(PORT, () => {
