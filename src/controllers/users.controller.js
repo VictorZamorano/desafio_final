@@ -60,7 +60,7 @@ const generateUser = async (req, res) => {
 
 //ENTREGA USUARIO SI SE VERIFICA LA EXISTENCIA DE ESTE Y DE LA AUTORIZACION
 const getUser = async (req, res) => {
-  const { email } = req.body;
+  const { email } = req;
   try {
     const result = await usersModel.readUser(email);
     if (result === "404") {

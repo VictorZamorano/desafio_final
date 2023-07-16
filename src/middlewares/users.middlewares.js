@@ -12,7 +12,6 @@ export const verifyToken = (req, res, next) => {
     const token = bearerHeader.split(" ")[1];
     const payload = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
     req.email = payload.email;
-    req.password = payload.password;
     next();
   } catch (error) {
     const { status, message } = handleErrors(error.code, error.message);
