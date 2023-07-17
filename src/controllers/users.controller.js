@@ -23,7 +23,7 @@ const tokenGen = async (req, res) => {
       throw { code: "401" };
     }
     const token = jwt.sign(
-      { email, password, role: result.role },
+      {id: result.id, email, password, role: result.role },
       process.env.JWT_PRIVATE_KEY,
       {
         expiresIn: "1h",
