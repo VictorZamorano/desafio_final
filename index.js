@@ -17,8 +17,8 @@ app.use(morgan("dev"));
 
 app.use("/users", usersRouter);
 app.use("/products", productsRouter)
-app.use("/", cartRoutes)
-app.use("/", orderRoutes)
+app.use("/cart", cartRoutes)
+app.use("/order", orderRoutes)
 
 
 const PORT = process.env.port || 3000;

@@ -4,9 +4,8 @@ import { orderController } from "../controllers/order.controller.js";
 
 const orderRoutes = Router();
 
-orderRoutes.get("/order/:id", /* verifyToken, */ orderController.getOrder);
-// orderRoutes.put("/cart/", /* verifyToken, */ cartController.addProductToCart);
-// orderRoutes.delete("/cart/", /* verifyToken, */ cartController.deleteProductFromCart);
+orderRoutes.post("/:id", verifyToken, orderController.getOrder);
+
 
 
 

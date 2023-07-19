@@ -189,12 +189,12 @@ INSERT INTO customer (user_account_id, first_name, last_name, phone) values (2, 
 
 -- test data category
 INSERT INTO category (category_name) VALUES ('placa madre');
-INSERT INTO category (category_name) VALUES ('RAM');
-INSERT INTO category (category_name) VALUES ('SSD y HDD');
-INSERT INTO category (category_name) VALUES ('Gabinetes');
-INSERT INTO category (category_name) VALUES ('Fuentes de poder');
-INSERT INTO category (category_name) VALUES ('Tarjetas de video');
-INSERT INTO category (category_name) VALUES ('Procesadores');
+INSERT INTO category (category_name) VALUES ('ram');
+INSERT INTO category (category_name) VALUES ('ssd y hdd');
+INSERT INTO category (category_name) VALUES ('gabinetes');
+INSERT INTO category (category_name) VALUES ('fuentes de poder');
+INSERT INTO category (category_name) VALUES ('tarjetas de video');
+INSERT INTO category (category_name) VALUES ('procesadores');
 
 
 -- DATA PRODUCTS:

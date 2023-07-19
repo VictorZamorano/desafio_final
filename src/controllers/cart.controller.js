@@ -3,10 +3,9 @@ import { cartHandleErrors } from "../helpers/cart.errors.js";
 import { cartModel } from "../models/cart.model.js";
 
 const getCart = async (req, res) => {
-    const {id} = req.params
+	const tokenId = req.id
 	try {
-		const getCart = await cartModel.getCart(id);
-		// console.log(getCart);
+		const getCart = await cartModel.getCart(tokenId);
 		res.status(200).json( getCart );
 	} catch (error) {
 		console.log(error.message);
@@ -16,9 +15,10 @@ const getCart = async (req, res) => {
 };
 
 const addProductToCart = async (req, res) => {
-	const {user_account_id, product} = req.body
+	const {product} = req.body
+	const tokenId = req.id
 	try {
-		const addProduct = await cartModel.addProductToCart(user_account_id, product);
+		const addProduct = await cartModel.addProductToCart(tokenId, product);
 		res.status(200).json( addProduct );
 	} catch (error) {
 		console.log(error.message);
@@ -28,9 +28,10 @@ const addProductToCart = async (req, res) => {
 };
 
 const deleteProductFromCart = async (req, res) => {
-	const {user_account_id, product} = req.body
+	const {product} = req.body
+	const tokenId = req.id
 	try {
-		const deleteProduct = await cartModel.deleteProductFromCart(user_account_id, product);
+		const deleteProduct = await cartModel.deleteProductFromCart(tokenId, product);
 		res.status(200).json( deleteProduct );
 	} catch (error) {
 		console.log(error.message);
