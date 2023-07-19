@@ -23,7 +23,7 @@ const tokenGen = async (req, res) => {
       throw { code: "401" };
     }
     const token = jwt.sign(
-      { email, password, role: result.role },
+      {id: result.id, email, password, role: result.role },
       process.env.JWT_PRIVATE_KEY,
       {
         expiresIn: "1h",
@@ -60,7 +60,7 @@ const generateUser = async (req, res) => {
 
 //ENTREGA USUARIO SI SE VERIFICA LA EXISTENCIA DE ESTE Y DE LA AUTORIZACION
 const getUser = async (req, res) => {
-  const { email } = req.body;
+  const { email } = req;
   try {
     const result = await usersModel.readUser(email);
     if (result === "404") {
