@@ -35,7 +35,7 @@ CREATE TABLE "user_account" (
   "active" boolean NOT NULL DEFAULT true,
   "email" varchar(25) UNIQUE,
   "password" varchar(60),
-  "role" varchar(10),
+  "role" varchar(10) DEFAULT 'user',
   "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -160,27 +160,27 @@ INSERT INTO city (region_id, name) VALUES (1, 'Colina');
 INSERT INTO city (region_id, name) VALUES (1, 'San Miguel');
 
 -- test data user_account
-INSERT INTO user_account (email, password, role, created_at) 
-VALUES ('usuario1@example.com', 'password1', 'user', CURRENT_TIMESTAMP);
-INSERT INTO user_account (email, password, role, created_at) 
-VALUES ('usuario2@example.com', 'password2', 'user', CURRENT_TIMESTAMP);
-INSERT INTO user_account (email, password, role, created_at) 
-VALUES ('usuario3@example.com', 'password3', 'user', CURRENT_TIMESTAMP);
-INSERT INTO user_account (email, password, role, created_at) 
-VALUES ('usuario4@example.com', 'password4', 'user', CURRENT_TIMESTAMP);
-INSERT INTO user_account (email, password, role, created_at) 
-VALUES ('usuario5@example.com', 'password5', 'user', CURRENT_TIMESTAMP);
-INSERT INTO user_account (email, password, role, created_at) 
-VALUES ('usuario6@example.com', 'password6', 'user', CURRENT_TIMESTAMP);
-INSERT INTO user_account (email, password, role, created_at) 
-VALUES ('usuario7@example.com', 'password7', 'user', CURRENT_TIMESTAMP);
-INSERT INTO user_account (email, password, role, created_at) 
-VALUES ('usuario8@example.com', 'password8', 'user', CURRENT_TIMESTAMP);
-INSERT INTO user_account (email, password, role, created_at) 
-VALUES ('usuario9@example.com', 'password9', 'user', CURRENT_TIMESTAMP);
-INSERT INTO user_account (email, password, role, created_at) 
-VALUES ('usuario10@example.com', 'password10', 'user', CURRENT_TIMESTAMP);
-INSERT INTO user_account (email, password, role, created_at) 
+INSERT INTO user_account (email, password) 
+VALUES ('usuario12@example.com', 'password1');
+INSERT INTO user_account (email, password) 
+VALUES ('usuario2@example.com', 'password2');
+INSERT INTO user_account (email, password) 
+VALUES ('usuario3@example.com', 'password3');
+INSERT INTO user_account (email, password) 
+VALUES ('usuario4@example.com', 'password4');
+INSERT INTO user_account (email, password) 
+VALUES ('usuario5@example.com', 'password5');
+INSERT INTO user_account (email, password) 
+VALUES ('usuario6@example.com', 'password6');
+INSERT INTO user_account (email, password) 
+VALUES ('usuario7@example.com', 'password7');
+INSERT INTO user_account (email, password) 
+VALUES ('usuario8@example.com', 'password8');
+INSERT INTO user_account (email, password) 
+VALUES ('usuario9@example.com', 'password9');
+INSERT INTO user_account (email, password) 
+VALUES ('usuario10@example.com', 'password10');
+INSERT INTO user_account (email, password) 
 VALUES ('admin1@example.com', 'admin1', 'admin', CURRENT_TIMESTAMP);
 
 -- test data customer

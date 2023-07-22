@@ -34,7 +34,6 @@ const updateUser = async (email, param, newParam) => {
   const formattedQuery = format(query, value);
   try {
     const { rows } = await pool.query(formattedQuery, [newParam, email]);
-    console.log(rows);
     if (rows.length === 0) {
       throw "404";
     }
