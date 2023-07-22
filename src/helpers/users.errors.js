@@ -78,12 +78,12 @@ export const handleErrors = (code, message = "Error desconocido") => {
     case "401":
       return {
         status: 401,
-        message: "Clave incorrecta",
+        message: "Clave incorrecta o usuario no autorizado",
       };
 
     case "402":
       return {
-        status: 400,
+        status: 401,
         message: "Se necesita el token bearer",
       };
 

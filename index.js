@@ -23,7 +23,7 @@ app.use("/order", orderRoutes)
 
 const PORT = process.env.port || 3000;
 app.listen(PORT, () => {
-	console.log("SERVER ON", "http://localhost:" + PORT);
+ console.log("SERVER ON", "http://localhost:" + PORT);
 });
 
 

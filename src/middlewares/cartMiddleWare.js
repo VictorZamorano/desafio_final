@@ -1,21 +1,46 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import { handleErrors } from "../db/errors.js";
+import { cartHandleErrors } from "../helpers/cart.errors.js";
 
-// const ifUserIdExist = (req, res, next) => {
-// 	try {
-// 		const {id} = req.params
-// // ES MAS FACIL HACER LA VALIDACION EN EL MODEL
-// 		const user = 
+ export const verifyCartRequest = (req, res, next) => {
+    try {
+      const {user_account_id, product} = req.body;
+      if(!user_account_id){
+        throw {code: "400"}
+      } else {
+        if(user_account_id <= 0){
+            throw {code: "400"}
+        }
+      }
+      if(!product){
+        throw {code: "400"}
+      } else {
+        if(product.length === 0){
+            throw {code: "400"}
+        } else {
+            product.forEach((p) => {
+                if(!p.product_id){
+                    throw {code: "400"}
+                } else {
+                    if(p.product_id <= 0){
+                        throw {code: "400"}
+                    }
+                }
 
-//         if(id > 0){
-            
-//         }
-// 		next();
-// 	} catch (error) {
-// 		console.log(error.message);
-// 		const { status, message } = handleErrors(error.code);
-// 		return res.status(status).json({ ok: false, result: message });
-// 	}
-// };
+                if(!p.quantity){
+                    throw {code: "400"}
+                } else{
+                    if(p.quantity <= 0){
+                        throw {code: "400"}  
+                    }
+                }
+            })
+        }
+      }
+      next();
+    } catch (error) {
+      const { status, message } = cartHandleErrors(error.code, error.message);
+      res.status(status).json({ status, message });
+    }
+  };
