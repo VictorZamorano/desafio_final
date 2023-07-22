@@ -70,9 +70,20 @@ const addProductToCart = async (user_account_id, product) => {
 	try {
 		let shoppingCart = await getCartGeneralData(user_account_id);
 
+		const existProduct = await availableProduct(product)
+		
+		if(!existProduct){
+			throw {code: "404.5"}
+		}
+		if(existProduct.length === 0){
+			throw {code: "404.3"}
+		}
+
 		const stockAvailable = await stockProduct(product)
+		
 		if(stockAvailable){
 			// Primero buscamos si existe un carro para el usuario, de no ser así, lo crearemos desde 0
+			
 			if(shoppingCart.length > 0) {
 				// Caso carro existe
 				await addProductToExistingCart(shoppingCart, product)
@@ -86,8 +97,7 @@ const addProductToCart = async (user_account_id, product) => {
 			const cart = await getJsonFormCart(shoppingCart)
 			return cart
 		} else {
-			// AGREGAR NUEVO CODE
-			throw {code: "400"}
+			throw {code: "404.4"}
 		}
 
 	} catch (error) {
@@ -101,6 +111,18 @@ const stockProduct = async(product) => {
 		 const stockQuery = "SELECT stock FROM product WHERE id = $1"
 		 const {rows} = await pool.query(stockQuery, [product[0].product_id])
 		 return product[0].quantity <= rows[0].stock
+	} catch (error) {
+		throw error;
+	}
+}
+
+// FUNCTION HELPER FOR addProductToExistingCart AND removeProductOnCart
+const availableProduct = async(product) => {
+	try {
+		 const availableQuery = "SELECT id FROM product WHERE id = $1"
+		 const result = await pool.query(availableQuery, [product[0].product_id])
+
+		 return result
 	} catch (error) {
 		throw error;
 	}
@@ -177,9 +199,6 @@ const createNewCart = async (user_account_id, product) => {
 					quantity: prod.quantity,
 					total_price: (prod.quantity * prod_detail.price)
 				}
-				if(!cart){
-					throw {code: "400"}
-				} // ESTABA REVISANDO ESTO
 				return cart;
 			
 			}
@@ -198,6 +217,7 @@ const createNewCart = async (user_account_id, product) => {
 		throw error;
 	}
 }
+
 const createNewCartDetail = async (user_account_id, shopping_cart_id, product_detail) => {
 	try {
 		const query = "INSERT INTO shopping_cart_detail (shopping_cart_id, product_id, quantity, total_price) VALUES ($1, $2, $3, $4)";
@@ -208,12 +228,35 @@ const createNewCartDetail = async (user_account_id, shopping_cart_id, product_de
 	} catch (error) {
 		throw error;
 	}
-}
+};
+
+const existProductOnUserCart = async (user_account_id, product) =>{
+	const userCart = await getCart(user_account_id)
+	const productOnCart = userCart.product
+	
+	const existOnCart = productOnCart.find(p => {
+		if(p.product_id === product){
+			return true
+		}
+		return false
+	})
+	return Boolean(existOnCart)
+};
 
 const deleteProductFromCart = async (user_account_id, product) => {
 	try {
 	  let shoppingCart = await getCartGeneralData(user_account_id);
-  
+
+	  const productOnCart = await existProductOnUserCart(user_account_id, product[0].product_id)
+	  const existProduct = await availableProduct(product)
+		if(!existProduct){
+			throw {code: "404.5"}
+		}
+
+		if(!productOnCart){
+			throw {code: "404.6"}
+		}
+
 	  await removeProductOnCart(shoppingCart, product, user_account_id);
   
 	  shoppingCart = await getCartGeneralData(user_account_id);

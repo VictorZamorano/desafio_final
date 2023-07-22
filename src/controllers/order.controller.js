@@ -1,5 +1,4 @@
 import { cartHandleErrors } from "../helpers/cart.errors.js";
-import { cartModel } from "../models/cart.model.js";
 import { orderModel } from "../models/order.model.js";
 
 

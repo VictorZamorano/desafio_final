@@ -9,7 +9,7 @@ import cartRoutes from "./src/routes/cart.routes.js";
 import productsRouter from "./src/routes/products.routes.js";
 import orderRoutes from "./src/routes/order.routes.js";
 
-const app = express();
+export const app = express();
 
 app.use(cors());
 app.use(express.json());
@@ -23,7 +23,7 @@ app.use("/order", orderRoutes)
 
 const PORT = process.env.port || 3000;
 app.listen(PORT, () => {
-	console.log("SERVER ON", "http://localhost:" + PORT);
+ console.log("SERVER ON", "http://localhost:" + PORT);
 });
 
 

@@ -4,7 +4,7 @@ import { orderController } from "../controllers/order.controller.js";
 
 const orderRoutes = Router();
 
-orderRoutes.post("/:id", verifyToken, orderController.getOrder);
+orderRoutes.post("/", verifyToken, orderController.getOrder);
 
 
 
