@@ -1,6 +1,7 @@
 import { pool } from "../db/connection.js";
 import { cartModel } from "./cart.model.js";
 
+// Genera la orden, esto es cuando efectua la compra del carro
 const genOrder = async (user_account_id) =>{
     try {
         const cart = await cartModel.getCart(user_account_id);
@@ -20,6 +21,8 @@ const genOrder = async (user_account_id) =>{
         throw error;
     }
 }
+
+// Genera el order_detail
 const getOrderDetail = async (user_account_id, user_order_id) =>{
     try {
         const cart = await cartModel.getCart(user_account_id);
@@ -34,6 +37,7 @@ const getOrderDetail = async (user_account_id, user_order_id) =>{
     }
 }
 
+// Elimina el shopping_cart para evitar tener productos duplicados
 const deleteShoppingCart = async (user_account_id)=>{
     try {
         const deleteQuery = "DELETE FROM shopping_cart WHERE user_account_id = $1";
@@ -44,6 +48,7 @@ const deleteShoppingCart = async (user_account_id)=>{
 
 }
 
+// Inserta los datos en order_detail
 const insertProductToOrder = async (cart, user_order_id) =>{
     try {
         cart.forEach( async(product) =>{

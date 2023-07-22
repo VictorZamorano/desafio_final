@@ -4,6 +4,8 @@ import {expect, jest} from '@jest/globals';
 import { cartModel } from "../models/cart.model.js";
 import { orderModel } from "../models/order.model.js";
 
+// npm run test --cart.test.js
+
 const getCartMock = {
     id: 45,
     user_account_id: 12,

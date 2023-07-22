@@ -8,14 +8,12 @@ const getCart = async (req, res) => {
 
 		if(!tokenId){
 			throw {code: "404.2"}
-		}
+		};
 		const getCart = await cartModel.getCart(tokenId);
-
-		console.log("Pase por getCart: ", getCart);
 
 		if(!getCart){
 			throw {code: "404"}
-		}
+		};
 
 		res.status(200).json( getCart );
 	} catch (error) {

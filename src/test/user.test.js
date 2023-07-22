@@ -1,7 +1,11 @@
 import request from "supertest";
-import { app } from "../index.js";
+import { app } from "../../index.js";
+
+// npm run test --user.test.js
 
 describe("Tests usuarios", () => {
+
+  
   it("Codigo 200 en solicitud GET en ruta /users/user y validacion de Objeto con almenos un objeto", async () => {
     const jwt =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0ZXJAZW1haWwuY29tIiwicGFzc3dvcmQiOiJ0ZXN0cGFzc3dvcmQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTAwMTI2MjF9.1_qLUHDUoFMGmn21Oc16lKGc1Q_H4Jfn2AwDEzZzPbI";

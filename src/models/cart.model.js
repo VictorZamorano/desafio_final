@@ -1,7 +1,7 @@
 import { pool } from "../db/connection.js";
 import { productsModel } from "./products.model.js";
 
-
+// Obtiene la data del shopping_cart
 const getCartGeneralData = async (user_account_id) => {
 	try {
 		const queryCart = "SELECT id, user_account_id, total_price FROM shopping_cart WHERE user_account_id = $1"
@@ -15,6 +15,7 @@ const getCartGeneralData = async (user_account_id) => {
 	}
 }
 
+// Obtiene los detalles de shopping_cart y shoppung_cart_detail
 const getCartDetails = async (shopping_cart_id) => {
 	try {
 		const queryCartDetails = "SELECT product.product_name, cartdetail.product_id, cartdetail.quantity as product_quantity,cartdetail.total_price as price_x_quantity, product.image_url FROM shopping_cart cart INNER JOIN shopping_cart_detail cartdetail ON cart.id = cartdetail.shopping_cart_id INNER JOIN product ON cartdetail.product_id = product.id INNER JOIN user_account useracc ON cart.user_account_id = useracc.id WHERE cartdetail.shopping_cart_id = $1"
@@ -26,6 +27,7 @@ const getCartDetails = async (shopping_cart_id) => {
 
 }
 
+// Da formato a la respuesta
 const getJsonFormCart = async (shoppingCart) => {
 	try {
 		if(shoppingCart.length > 0){
@@ -53,6 +55,7 @@ const getJsonFormCart = async (shoppingCart) => {
 	}
 }
 
+// Obtiene el cart del usuario
 const getCart = async (user_account_id) => {
 	try {
 		const shoppingCart = await getCartGeneralData(user_account_id);
@@ -65,7 +68,7 @@ const getCart = async (user_account_id) => {
 	}
 }
 
-
+// Agrega los productos y/o aumenta la cantidad
 const addProductToCart = async (user_account_id, product) => {
 	try {
 		let shoppingCart = await getCartGeneralData(user_account_id);
@@ -105,6 +108,7 @@ const addProductToCart = async (user_account_id, product) => {
 	}
 };
 
+// Verifica el stock del producto
 // FALTA OPTIMIZACION PARA CUANDO YA EXISTE EL PRODUCTO EN EL CARRO ENVIE THROW DE QUE SE SUPERO LA CANTIDAD DE STOCK 
 const stockProduct = async(product) => {
 	try {
@@ -128,7 +132,7 @@ const availableProduct = async(product) => {
 	}
 }
 
-
+// FUNCTION HELPER FOR addProductToExistingCart AND removeProductOnCart
 const totalPriceForProduct = async (product_id, quantity) =>{
 	const productQuery = "SELECT id, price FROM product WHERE id = $1"
 
@@ -159,7 +163,8 @@ const updateProductOnCart = async (newQuantity, shopping_cart_id, product) =>{
 	await pool.query(updatePriceQuery, [totalPrice, shopping_cart_id, product]);
 }
 
-
+// Agrega un producto a un carro existente (esto es siempre y cuando exista un producto)
+// FUNCTION HELPER FOR addProductToExistingCart
 const addProductToExistingCart = async (shopping_cart_id, product) => {
 
 	try {
@@ -184,6 +189,8 @@ const addProductToExistingCart = async (shopping_cart_id, product) => {
 	}
 }
 
+// Crea un nuevo cart
+// FUNCTION HELPER FOR addProductToExistingCart
 const createNewCart = async (user_account_id, product) => {
 	try {
 		let cart_total_price = 0;
@@ -218,6 +225,7 @@ const createNewCart = async (user_account_id, product) => {
 	}
 }
 
+// Crea un shopping_cart_detail con los productos enviados
 const createNewCartDetail = async (user_account_id, shopping_cart_id, product_detail) => {
 	try {
 		const query = "INSERT INTO shopping_cart_detail (shopping_cart_id, product_id, quantity, total_price) VALUES ($1, $2, $3, $4)";
@@ -230,6 +238,7 @@ const createNewCartDetail = async (user_account_id, shopping_cart_id, product_de
 	}
 };
 
+// FUNCTION HELPER FOR addProductToExistingCart AND removeProductOnCart
 const existProductOnUserCart = async (user_account_id, product) =>{
 	const userCart = await getCart(user_account_id)
 	const productOnCart = userCart.product
@@ -243,6 +252,8 @@ const existProductOnUserCart = async (user_account_id, product) =>{
 	return Boolean(existOnCart)
 };
 
+
+// ELIMINA LOS PRODUCTOS DEL CARRO O ELIMINA EL CARRO EN CASO DE NO TENER ALGUN PRODUCTO
 const deleteProductFromCart = async (user_account_id, product) => {
 	try {
 	  let shoppingCart = await getCartGeneralData(user_account_id);
@@ -276,7 +287,7 @@ const deleteProductFromCart = async (user_account_id, product) => {
 	}
   };
 
-
+// Remueve el producto del carro y/o reduce la cantidad
 const removeProductOnCart = async (shopping_cart_id, product, user_account_id) => {
 	try {
 	  const existingQuantity = await existingProductQuantity(shopping_cart_id[0].id, product[0].product_id);
