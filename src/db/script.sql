@@ -181,9 +181,9 @@ VALUES ('usuario9@example.com', 'password9');
 INSERT INTO user_account (email, password) 
 VALUES ('usuario10@example.com', 'password10');
 INSERT INTO user_account (email, password) 
-VALUES ('admin1@example.com', 'admin1', 'admin', CURRENT_TIMESTAMP);
-INSERT INTO user_account (email, password, role, created_at) 
-VALUES ('test@test.com', '$2b$10$dB8lP2/OB5bHs5hXUmpBMepr6ELuTOdxNwAirEyvHGzteSHFf5G7q', 'user', CURRENT_TIMESTAMP);
+VALUES ('admin1@example.com', 'admin1');
+INSERT INTO user_account (email, password) 
+VALUES ('test@test.com', '$2b$10$dB8lP2/OB5bHs5hXUmpBMepr6ELuTOdxNwAirEyvHGzteSHFf5G7q');
 
 -- test data customer
 INSERT INTO customer (user_account_id, first_name, last_name, phone) values (1, 'Victor', 'Zamorano', '56942384773');
