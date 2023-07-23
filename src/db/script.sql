@@ -1,6 +1,6 @@
-CREATE DATABASE shopping;
+-- CREATE DATABASE shopping;
 
-\c shopping;
+-- \c shopping;
 
 -- Drop tables
 DROP TABLE IF EXISTS "shipped";
