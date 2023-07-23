@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { seeder } from "../controllers/seed.controller";
+import { seeder } from "../controllers/seed.controller.js";
 
-const router = Router();
+const seedRouter = Router();
 
-router.get("/", seeder);
+seedRouter.get("/", seeder);
 
 export default seedRouter;
