@@ -5,14 +5,7 @@ import { cartHandleErrors } from "../helpers/cart.errors.js";
 
  export const verifyCartRequest = (req, res, next) => {
     try {
-      const {user_account_id, product} = req.body;
-      if(!user_account_id){
-        throw {code: "400"}
-      } else {
-        if(user_account_id <= 0){
-            throw {code: "400"}
-        }
-      }
+      const {product} = req.body;
       if(!product){
         throw {code: "400"}
       } else {
