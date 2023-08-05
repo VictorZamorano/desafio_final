@@ -126,7 +126,7 @@ CREATE TABLE "shipped" (
 
 -- index
 ALTER TABLE "city" ADD FOREIGN KEY ("region_id") REFERENCES "region" ("id");
-ALTER TABLE "customer" ADD FOREIGN KEY ("user_account_id") REFERENCES "user_account" ("id");
+-- ALTER TABLE "customer" ADD FOREIGN KEY ("user_account_id") REFERENCES "user_account" ("id");
 -- ALTER TABLE "order" ADD FOREIGN KEY ("user_account_id") REFERENCES "user_account" ("id");
 -- ALTER TABLE "order_detail" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
 ALTER TABLE "order_detail" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
@@ -189,8 +189,8 @@ INSERT INTO user_account (email, password)
 VALUES ('test@test.com', '$2b$10$dB8lP2/OB5bHs5hXUmpBMepr6ELuTOdxNwAirEyvHGzteSHFf5G7q');
 
 -- test data customer
-INSERT INTO customer (user_account_id, first_name, last_name, phone) values (1, 'Victor', 'Zamorano', '56942384773');
-INSERT INTO customer (user_account_id, first_name, last_name, phone) values (2, 'renato', 'Perez', '56942384773');
+-- INSERT INTO customer (user_account_id, first_name, last_name, phone) values (1, 'Victor', 'Zamorano', '56942384773');
+-- INSERT INTO customer (user_account_id, first_name, last_name, phone) values (2, 'renato', 'Perez', '56942384773');
 
 -- test data category
 INSERT INTO category (category_name) VALUES ('placa madre');
