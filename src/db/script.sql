@@ -33,20 +33,23 @@ CREATE TABLE "city" (
 CREATE TABLE "user_account" (
   "id" serial PRIMARY KEY,
   "active" boolean NOT NULL DEFAULT true,
+  "first_name" varchar(20),
+  "last_name" varchar(20),
+  "phone" varchar(14),
   "email" varchar(25) UNIQUE,
   "password" varchar(60),
   "role" varchar(10) DEFAULT 'user',
   "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE "customer" (
-  "id" serial PRIMARY KEY,
-  "user_account_id" int,
-  "first_name" varchar(20),
-  "last_name" varchar(20),
-  "phone" varchar(14),
-  "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+-- CREATE TABLE "customer" (
+--   "id" serial PRIMARY KEY,
+--   "user_account_id" int,
+--   "first_name" varchar(20),
+--   "last_name" varchar(20),
+--   "phone" varchar(14),
+--   "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+-- );
 
 CREATE TABLE "category" (
   "id" serial PRIMARY KEY,
