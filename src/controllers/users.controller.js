@@ -79,15 +79,17 @@ const getUser = async (req, res) => {
 
 //EDITA USUARIO DE UN CAMPO A LA VEZ, PREVIA VALIDACION DE ROL
 const editUser = async (req, res) => {
-  const { email, password, userToEdit, param, newParam } = req.body;
+  let { userToEdit, param, newParam } = req.body;
   const token = req.headers.authorization.split(" ")[1];
+  const tokenEmail = jwt.verify(token, process.env.JWT_PRIVATE_KEY).email;
   const role = jwt.verify(token, process.env.JWT_PRIVATE_KEY).role;
+
   try {
     if (!userToEdit || !param || !newParam) {
       throw { code: "405" };
     }
     if (role === "user") {
-      if (email === userToEdit) {
+      if (tokenEmail === userToEdit) {
         if (param === "id" || param === "role" || param === "created_at") {
           throw { code: "406" };
         }
@@ -96,7 +98,7 @@ const editUser = async (req, res) => {
       }
     }
     if (param === "password") {
-      newParam = await bcrypt.hash(password, 10);
+      newParam = await bcrypt.hash(newParam, 10);
     }
     const result = await usersModel.updateUser(userToEdit, param, newParam);
     if (result === "404") {
